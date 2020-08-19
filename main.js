@@ -46,6 +46,7 @@ const phoneNumber = prompt(
 function formattedPhone(phone) {
   let result = "";
 
+  phone = String(phone);
   for (let i = 0; i < phoneNumber.length; i++) {
     result += phone.charAt(i);
     if (i === 1) {
@@ -64,6 +65,6 @@ function formattedPhone(phone) {
   return result;
 }
 
-console.log(formattedPhone("+71234567890")); // +7 (123) 456-78-90
+console.log(formattedPhone(phoneNumber)); // +7 (123) 456-78-90
 
 /*2nd exercise*/
