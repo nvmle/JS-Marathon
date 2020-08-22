@@ -1,70 +1,74 @@
-/*1st exercise*/
+const $btn = document.getElementById("btn-kick");
+const $btnVamp = document.getElementById("btn-kick-vamp");
 
-//const firstRow = "мама мыла раму";
-//const secondRow = "собака друг человека";
+const character = {
+  name: "Pikachu",
+  defaultHP: 100,
+  damageHP: 100,
+  elHP: document.getElementById("health-character"),
+  elProgressbarHP: document.getElementById("progressbar-character"),
+};
 
-const firstRow = prompt('Введите первую фразу с буквами "а"');
-const secondRow = prompt('Введите вторую фразу с буквами "а"');
+const enemy = {
+  name: "Charmander",
+  defaultHP: 100,
+  damageHP: 100,
+  elHP: document.getElementById("health-enemy"),
+  elProgressbarHP: document.getElementById("progressbar-enemy"),
+};
 
-function getRow(firstRow, secondRow) {
-  let countCharAInFirstRow = 0;
-  let countCharAInSecondRow = 0;
+$btn.addEventListener("click", function () {
+  console.log("Kick");
+  changeHP(ramdom(20), character);
+  changeHP(ramdom(20), enemy);
+  renderHP(character);
+  renderHP(enemy);
+});
 
-  let result;
+$btnVamp.addEventListener("click", function () {
+  console.log("Kick");
+  const value = ramdom(20);
+  changeHP(value, enemy);
+  healHP(value, character);
+  renderHP(character);
+  renderHP(enemy);
+});
 
-  for (let i = 0; i < firstRow.length; i++) {
-    if (firstRow.charAt(i) === "а" || firstRow.charAt(i) === "А") {
-      countCharAInFirstRow++;
-    }
-  }
-
-  for (let i = 0; i < secondRow.length; i++) {
-    if (secondRow.charAt(i) === "а" || secondRow.charAt(i) === "А") {
-      countCharAInSecondRow++;
-    }
-  }
-
-  if (countCharAInSecondRow > countCharAInFirstRow) {
-    result = secondRow;
-  } else if (countCharAInSecondRow === countCharAInFirstRow) {
-    result = 'количество букв "а" одинаково';
-  } else result = firstRow;
-
-  return result;
+function init() {
+  console.log("Start game");
+  renderHP(character);
+  renderHP(enemy);
 }
 
-console.log(getRow(firstRow, secondRow)); // мама мыла раму
-/*1st exercise*/
-
-/*2nd exercise*/
-
-const phoneNumber = prompt(
-  "Введите номер телефона в формате +71234567890",
-  "+71234567890"
-);
-// console.log(phoneNumber);
-function formattedPhone(phone) {
-  let result = "";
-
-  phone = String(phone);
-  for (let i = 0; i < phoneNumber.length; i++) {
-    result += phone.charAt(i);
-    if (i === 1) {
-      result += " (";
-    }
-    if (i === 4) {
-      result += ") ";
-    }
-    if (i === 7) {
-      result += "-";
-    }
-    if (i === 9) {
-      result += "-";
-    }
-  }
-  return result;
+function renderHP(person) {
+  person.elHP.innerText = person.damageHP + " / " + person.defaultHP;
+  person.elProgressbarHP.style.width = person.damageHP + "%";
 }
 
-console.log(formattedPhone(phoneNumber)); // +7 (123) 456-78-90
+function changeHP(count, person) {
+  if (person.damageHP <= count) {
+    person.damageHP = 0;
+    alert("Бедный " + person.name + " проиграл бой!");
+    $btn.disabled = true;
+    $btnVamp.disabled = true;
+  } else {
+    person.damageHP -= count;
+  }
+}
 
-/*2nd exercise*/
+function healHP(count, person) {
+  if (person.damageHP + count >= person.defaultHP) {
+    person.damageHP = 100;
+  } else {
+    person.damageHP += count;
+  }
+  $btnVamp.disabled = true;
+
+  renderHP(person);
+}
+
+function ramdom(num) {
+  return Math.ceil(Math.random() * num);
+}
+
+init();
