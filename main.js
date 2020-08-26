@@ -3,68 +3,75 @@ const $btnVamp = document.getElementById("btn-kick-vamp");
 
 const character = {
   name: "Pikachu",
-  defaultHP: 100,
-  damageHP: 100,
+  defaultHP: 200,
+  damageHP: 200,
   elHP: document.getElementById("health-character"),
   elProgressbarHP: document.getElementById("progressbar-character"),
+  renderHP: renderHP,
+  changeHP: changeHP,
+  healHP: healHP,
 };
 
 const enemy = {
   name: "Charmander",
-  defaultHP: 100,
-  damageHP: 100,
+  defaultHP: 150,
+  damageHP: 150,
   elHP: document.getElementById("health-enemy"),
   elProgressbarHP: document.getElementById("progressbar-enemy"),
+  renderHP: renderHP,
+  changeHP: changeHP,
+  healHP: healHP,
 };
 
 $btn.addEventListener("click", function () {
   console.log("Kick");
-  changeHP(ramdom(20), character);
-  changeHP(ramdom(20), enemy);
-  renderHP(character);
-  renderHP(enemy);
+  character.changeHP(ramdom(20));
+  enemy.changeHP(ramdom(20));
+  renderHPPersons();
 });
 
 $btnVamp.addEventListener("click", function () {
-  console.log("Kick");
+  console.log("Kick Vamp");
   const value = ramdom(20);
-  changeHP(value, enemy);
-  healHP(value, character);
-  renderHP(character);
-  renderHP(enemy);
+  enemy.changeHP(value);
+  character.healHP(value);
+  renderHPPersons();
 });
+
+function renderHPPersons() {
+  character.renderHP();
+  enemy.renderHP();
+}
+
+function renderHP() {
+  this.elHP.innerText = this.damageHP + " / " + this.defaultHP;
+  this.elProgressbarHP.style.width =
+    (this.damageHP / this.defaultHP) * 100 + "%";
+}
 
 function init() {
   console.log("Start game");
-  renderHP(character);
-  renderHP(enemy);
+  renderHPPersons();
 }
 
-function renderHP(person) {
-  person.elHP.innerText = person.damageHP + " / " + person.defaultHP;
-  person.elProgressbarHP.style.width = person.damageHP + "%";
-}
-
-function changeHP(count, person) {
-  if (person.damageHP <= count) {
-    person.damageHP = 0;
-    alert("Бедный " + person.name + " проиграл бой!");
+function changeHP(count) {
+  if (this.damageHP <= count) {
+    this.damageHP = 0;
+    alert("Бедный " + this.name + " проиграл бой!");
     $btn.disabled = true;
     $btnVamp.disabled = true;
   } else {
-    person.damageHP -= count;
+    this.damageHP -= count;
   }
 }
 
-function healHP(count, person) {
-  if (person.damageHP + count >= person.defaultHP) {
-    person.damageHP = 100;
+function healHP(count) {
+  if (this.damageHP + count >= this.defaultHP) {
+    this.damageHP = 100;
   } else {
-    person.damageHP += count;
+    this.damageHP += count;
   }
   $btnVamp.disabled = true;
-
-  renderHP(person);
 }
 
 function ramdom(num) {
