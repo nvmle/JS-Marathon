@@ -1,6 +1,8 @@
 const $btn = document.getElementById("btn-kick");
 const $btnVamp = document.getElementById("btn-kick-vamp");
+const $btnFireBall = document.getElementById("btn-kick-fireball");
 const $logs = document.querySelector("#logs");
+const MAXCLICKCOUNT = 10;
 
 function $getElById(id) {
   return document.getElementById(id);
@@ -20,6 +22,9 @@ const character = {
   renderHP: renderHP,
   changeHP: changeHP,
   healHP: healHP,
+  colorProgressbarHP: colorProgressbarHP,
+  flashProgressbarHP: flashProgressbarHP,
+  renderHPPersons: renderHPPersons,
 };
 
 const {
@@ -44,27 +49,39 @@ const enemy = {
   renderHP: renderHP,
   changeHP: changeHP,
   healHP: healHP,
+  colorProgressbarHP: colorProgressbarHP,
+  flashProgressbarHP: flashProgressbarHP,
+  renderHPPersons: renderHPPersons,
 };
 
 $btn.addEventListener("click", function () {
-  console.log("Kick");
-  character.changeHP(random(20));
+  const count = countThunderJolt(1, $btn);
+  console.log(`Thunder Jolt нажали ${count} раз(а)`);
   enemy.changeHP(random(20));
-  renderHPPersons();
-  flashProgressbarHP();
+  enemy.renderHPPersons();
 });
 
 $btnVamp.addEventListener("click", function () {
-  console.log("Kick Vamp");
+  const count = countVampThunderJolt(1, $btnVamp);
+  console.log(`Vamp Thunder Jolt нажали ${count} раз(а)`);
   const value = random(20);
-  character.healHP(value);
+  character.healHP(Math.round(value / 2));
   enemy.changeHP(value);
-  renderHPPersons();
+  character.renderHPPersons();
+  enemy.renderHPPersons();
+});
+
+$btnFireBall.addEventListener("click", function () {
+  const count = countFireBall(1, $btnFireBall);
+  console.log(`Fire Ball нажали ${count} раз(а)`);
+  character.changeHP(random(20));
+  character.renderHPPersons();
 });
 
 function renderHPPersons() {
-  character.renderHP();
-  enemy.renderHP();
+  this.renderHP();
+  this.flashProgressbarHP();
+  this.colorProgressbarHP();
 }
 
 function renderHP() {
@@ -74,8 +91,11 @@ function renderHP() {
 }
 
 function init() {
-  console.log("Start game");
-  renderHPPersons();
+  const log = `Бой начался!`;
+  displayLogs(log);
+  // renderHPPersons();
+  character.renderHPPersons();
+  enemy.renderHPPersons();
 }
 
 function changeHP(count) {
@@ -83,9 +103,12 @@ function changeHP(count) {
 
   if (this.hp.current <= 0) {
     this.hp.current = 0;
-    alert("Бедный " + this.name + " проиграл бой!");
-    $btn.disabled = true;
-    $btnVamp.disabled = true;
+    disableButtons($btn);
+    disableButtons($btnFireBall);
+    disableButtons($btnVamp);
+    const log = `Бедный ${this.name} проиграл бой!`;
+    displayLogs(log);
+    logRestButtonClickCount();
   }
 
   const log =
@@ -100,10 +123,10 @@ function healHP(count) {
   this.hp.current += count;
 
   if (this.hp.current >= this.hp.total) {
-    this.hp.current = 100;
+    this.hp.current = this.hp.total;
   }
 
-  $btnVamp.disabled = true;
+  //disableButtons($btnVamp);
 
   const log =
     this === enemy
@@ -113,9 +136,10 @@ function healHP(count) {
   displayLogs(log);
 }
 
-function random(num) {
-  return Math.ceil(Math.random() * num);
+function disableButtons(element) {
+  element.disabled = true;
 }
+const random = (num) => Math.ceil(Math.random() * num);
 
 function generateLog(firstPerson, secondPerson, damage) {
   const logs = [
@@ -139,5 +163,71 @@ function displayLogs(log) {
   $p.innerText = log;
   $logs.insertBefore($p, $logs.children[0]);
 }
+
+function colorProgressbarHP() {
+  temp = this.elProgressbarHP;
+  if (this.hp.current <= this.hp.total / 5) {
+    temp.classList.add("critical");
+  } else if (this.hp.current <= this.hp.total / 2) {
+    temp.classList.remove("critical");
+    temp.classList.add("low");
+  } else {
+    temp.classList.remove("low");
+  }
+}
+
+function flashProgressbarHP() {
+  const t = this.elProgressbarHP;
+  t.classList.add("flash");
+  setTimeout(function () {
+    t.classList.remove("flash");
+  }, 75);
+}
+
+function clickCounter() {
+  let clickCount = 0;
+
+  return function (n = 0, button) {
+    clickCount += n;
+    //console.log(button);
+    if (clickCount >= MAXCLICKCOUNT) {
+      disableButtons(button);
+    }
+    return clickCount; //console.log(clickCount);
+  };
+}
+const countThunderJolt = clickCounter();
+const countVampThunderJolt = clickCounter();
+const countFireBall = clickCounter();
+
+function logRestButtonClickCount() {
+  console.log(
+    `Thunder Jolt можно было нажать еще ${
+      MAXCLICKCOUNT - countThunderJolt(0)
+    } раз(а)`
+  );
+  console.log(
+    `Vamp Thunder Jolt можно было нажать еще ${
+      MAXCLICKCOUNT - countVampThunderJolt(0)
+    } раз(а)`
+  );
+  console.log(
+    `Fire  можно было нажать еще ${MAXCLICKCOUNT - countFireBall(0)} раз(а)`
+  );
+}
+// const t = clickCounter();
+// t(0);
+// console.log(t(0));
+// t(1);
+// console.log(t(0));
+// t(1);
+// console.log(t(0));
+// t(1);
+// console.log(t(0));
+// t(1);
+// console.log(t(0));
+// t(1);
+
+//console.log($btnFireBall.innerText);
 
 init();

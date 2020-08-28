@@ -223,6 +223,23 @@ body {
   );
   background: linear-gradient(to right, #d20000, #f51700);
 }
+
+/**/
+
+.flash {
+  background: #fff !important;
+}
+/* .pokemon .details .hp .health.flash {
+  background: #ffff;
+}
+.pokemon .details .hp .health.low.flash {
+  background: #fff;
+}
+.pokemon .details .hp .health.critical.flash {
+  background: #fff;
+} */
+/**/
+
 .pokemon .pokeball {
   position: absolute;
   fill: white;
@@ -581,7 +598,7 @@ h1 {
   height: 500px;
 }
 
-.layer {
+.logs-scroll {
   margin-left: auto;
   margin-right: auto;
   overflow: scroll; /* Добавляем полосы прокрутки */
