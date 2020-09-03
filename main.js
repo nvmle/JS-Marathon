@@ -1,51 +1,61 @@
 import Pokemon from "./pokemon.js";
-import random from "./utils.js";
-import { generateLog } from "./utils.js";
-import { generateHealLog } from "./utils.js";
-import { clickCounter } from "./utils.js";
+import {
+  random,
+  generateLog,
+  // generateHealLog,
+  clickCounter,
+  randomPokemon,
+} from "./utils.js";
+import { pokemons } from "./pokemons.js";
 
-const $btn = document.getElementById("btn-kick");
-const $btnVamp = document.getElementById("btn-kick-vamp");
-const $btnFireBall = document.getElementById("btn-kick-fireball");
+const $control = document.querySelector(".control");
 
-const character = new Pokemon({
-  name: "Pikachu",
-  type: "electric",
-  hp: 300,
-  selectors: "character",
+let allButtons = document.querySelectorAll(".control .button");
+allButtons.forEach(($item) => $item.remove());
+const $btnStart = document.createElement("button");
+$btnStart.classList.add("button");
+$btnStart.innerText = "Start game!";
+$control.appendChild($btnStart);
+
+$btnStart.addEventListener("click", () => {
+  allButtons = document.querySelectorAll(".control .button");
+  allButtons.forEach(($item) => $item.remove());
+  newGame();
 });
 
-const enemy = new Pokemon({
-  name: "Charmander",
-  type: "fire",
-  hp: 300,
-  selectors: "enemy",
-});
-
-const countThunderJolt = clickCounter(8, $btn);
-$btn.addEventListener("click", function () {
-  countThunderJolt(1, $btn);
-  enemy.changeHP(random(60, 20), function (count) {
-    generateLog(enemy, character, count);
+function newGame() {
+  let rndPok = randomPokemon();
+  const pokemonCharacter = pokemons.find((item) => item.name === rndPok);
+  const player1 = new Pokemon({
+    ...pokemonCharacter,
+    selectors: "player1",
   });
-});
 
-const countVampThunderJolt = clickCounter(2, $btnVamp);
-$btnVamp.addEventListener("click", function () {
-  countVampThunderJolt(1, $btnVamp);
-  const value = random(40, 20);
-  character.healHP(Math.round(value / 2), function (count) {
-    generateHealLog(character, count);
+  rndPok = randomPokemon();
+  const pokemonEnemy = pokemons.find((item) => item.name === rndPok);
+  const player2 = new Pokemon({
+    ...pokemonEnemy,
+    selectors: "player2",
   });
-  enemy.changeHP(value, function (count) {
-    generateLog(enemy, character, count);
-  });
-});
 
-const countFireBall = clickCounter(8, $btnFireBall);
-$btnFireBall.addEventListener("click", function () {
-  countFireBall(1, $btnFireBall);
-  character.changeHP(random(60, 20), function (count) {
-    generateLog(character, enemy, count);
+  player1.attacks.forEach((item) => {
+    const $btn = document.createElement("button");
+    $btn.classList.add("button");
+    $btn.innerText = item.name;
+    const countBtn = clickCounter(item.maxCount, $btn);
+    $btn.addEventListener("click", () => {
+      player2.changeHP(random(item.maxDamage, item.minDamage), (count) =>
+        generateLog(player2, player1, count)
+      );
+      countBtn(1);
+    });
+
+    $control.appendChild($btn);
   });
-});
+}
+
+// $btnRestart.addEventListener("click", () => {
+//   allButtons = document.querySelectorAll(".control .button");
+//   allButtons.forEach(($item) => $item.remove());
+//   newGame();
+// });

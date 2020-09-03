@@ -2,21 +2,35 @@ class Selectors {
   constructor(name) {
     this.elHP = document.getElementById(`health-${name}`);
     this.elProgressbarHP = document.getElementById(`progressbar-${name}`);
+    this.elImg = document.getElementById(`img-${name}`);
+    this.elName = document.getElementById(`name-${name}`);
   }
 }
 class Pokemon extends Selectors {
-  constructor({ name, hp, type, selectors }) {
+  constructor({ name, img, hp, type, selectors, attacks = [] }) {
     super(selectors);
 
     this.name = name;
+    this.img = img;
     this.hp = {
       current: hp,
       total: hp,
     };
     this.type = type;
+    this.attacks = attacks;
 
+    this.changeImg();
+    this.changeName();
     this.renderHPPersons();
   }
+
+  changeImg = () => {
+    this.elImg.src = this.img;
+  };
+
+  changeName = () => {
+    this.elName.innerText = this.name;
+  };
 
   renderHPPersons = () => {
     this.renderHP();
@@ -55,19 +69,35 @@ class Pokemon extends Selectors {
 
     if (this.hp.current <= 0) {
       this.hp.current = 0;
+      alert(this.name + " проиграл бой!");
+      let allButtons = document.querySelectorAll(".control .button");
+      allButtons.forEach(($item) => ($item.disabled = true));
+      allButtons.forEach(($item) => $item.remove());
+
+      const $control = document.querySelector(".control");
+      const $btnRestart = document.createElement("button");
+      $btnRestart.classList.add("button");
+      $btnRestart.innerText = "Restart game!";
+      $control.appendChild($btnRestart);
+
+      // $btnRestart.addEventListener("click", () => {
+      //   allButtons = document.querySelectorAll(".control .button");
+      //   allButtons.forEach(($item) => $item.remove());
+      //   newGame();
+      // });
     }
     this.renderHPPersons();
     callback && callback(count);
   };
 
-  healHP = (count, callback) => {
-    this.hp.current += count;
+  // healHP = (count, callback) => {
+  //   this.hp.current += count;
 
-    if (this.hp.current >= this.hp.total) {
-      this.hp.current = this.hp.total;
-    }
-    this.renderHPPersons();
-    callback && callback(count);
-  };
+  //   if (this.hp.current >= this.hp.total) {
+  //     this.hp.current = this.hp.total;
+  //   }
+  //   this.renderHPPersons();
+  //   callback && callback(count);
+  // };
 }
 export default Pokemon;
