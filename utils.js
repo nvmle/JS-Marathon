@@ -1,4 +1,4 @@
-function random(max, min = 0) {
+export function random(max, min = 0) {
   const num = max - min;
   return Math.ceil(Math.random() * num + min);
 }
@@ -22,15 +22,15 @@ export function generateLog(firstPerson, secondPerson, damage) {
   displayLogs(logs[random(logs.length) - 1]);
 }
 
-export function generateHealLog(firstPerson, healValue) {
-  const logs = [
-    `Пролился свет с небес на землю и ${firstPerson.name} восстановил часть здоровья +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-    `${firstPerson.name} съел яблоко и пополнил энергию +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-    `${firstPerson.name} испил целебный элексир, что прибавило ему сил +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-  ];
+// export function generateHealLog(firstPerson, healValue) {
+//   const logs = [
+//     `Пролился свет с небес на землю и ${firstPerson.name} восстановил часть здоровья +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
+//     `${firstPerson.name} съел яблоко и пополнил энергию +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
+//     `${firstPerson.name} испил целебный элексир, что прибавило ему сил +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
+//   ];
 
-  displayLogs(logs[random(logs.length) - 1]);
-}
+//   displayLogs(logs[random(logs.length) - 1]);
+// }
 
 export function displayLogs(log) {
   const $p = document.createElement("p");
@@ -52,4 +52,15 @@ export function clickCounter(maxClicks = 8, button) {
   };
 }
 
-export default random;
+export function randomPokemon() {
+  const pokemons = [
+    "Pikachu",
+    "Charmander",
+    "Bulbasaur",
+    "Squirtle",
+    "Pidgey",
+    "Mew",
+  ];
+
+  return pokemons[random(pokemons.length - 1)];
+}
