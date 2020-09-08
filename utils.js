@@ -52,15 +52,15 @@ export function clickCounter(maxClicks = 8, button) {
   };
 }
 
-export function randomPokemon() {
-  const pokemons = [
-    "Pikachu",
-    "Charmander",
-    "Bulbasaur",
-    "Squirtle",
-    "Pidgey",
-    "Mew",
-  ];
+// export function randomPokemon() {
+//   const pokemons = [
+//     "Pikachu",
+//     "Charmander",
+//     "Bulbasaur",
+//     "Squirtle",
+//     "Pidgey",
+//     "Mew",
+//   ];
 
-  return pokemons[random(pokemons.length - 1)];
-}
+//   return pokemons[random(pokemons.length - 1)];
+// }
