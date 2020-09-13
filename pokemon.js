@@ -7,7 +7,7 @@ class Selectors {
   }
 }
 class Pokemon extends Selectors {
-  constructor({ name, img, hp, type, selectors, attacks = [], id }) {
+  constructor({ name, img, hp, type, selectors, attacks = [], id, isAlive }) {
     super(selectors);
 
     this.name = name;
@@ -19,6 +19,8 @@ class Pokemon extends Selectors {
     this.type = type;
     this.id = id;
     this.attacks = attacks;
+
+    this.isAlive = isAlive;
 
     this.changeImg();
     this.changeName();
@@ -35,8 +37,8 @@ class Pokemon extends Selectors {
 
   renderHPPersons = () => {
     this.renderHP();
-    this.flashProgressbarHP();
     this.colorProgressbarHP();
+    this.flashProgressbarHP();
   };
 
   renderHP = () => {
@@ -54,6 +56,7 @@ class Pokemon extends Selectors {
       temp.classList.add("low");
     } else {
       temp.classList.remove("low");
+      temp.classList.remove("critical");
     }
   };
 
@@ -65,7 +68,7 @@ class Pokemon extends Selectors {
     }, 75);
   };
 
-  changeHP = (count, callback) => {
+  changeHP1 = (count, callback) => {
     this.hp.current -= count;
 
     if (this.hp.current <= 0) {
@@ -75,30 +78,26 @@ class Pokemon extends Selectors {
       allButtons.forEach(($item) => ($item.disabled = true));
       allButtons.forEach(($item) => $item.remove());
 
-      const $control = document.querySelector(".control");
-      const $btnRestart = document.createElement("button");
-      $btnRestart.classList.add("button");
-      $btnRestart.innerText = "Restart game!";
-      $control.appendChild($btnRestart);
-
-      // $btnRestart.addEventListener("click", () => {
-      //   allButtons = document.querySelectorAll(".control .button");
-      //   allButtons.forEach(($item) => $item.remove());
-      //   newGame();
-      // });
+      this.isAlive = 0;
     }
     this.renderHPPersons();
     callback && callback(count);
   };
 
-  // healHP = (count, callback) => {
-  //   this.hp.current += count;
+  changeHP = (count, callback) => {
+    this.hp.current -= count;
 
-  //   if (this.hp.current >= this.hp.total) {
-  //     this.hp.current = this.hp.total;
-  //   }
-  //   this.renderHPPersons();
-  //   callback && callback(count);
-  // };
+    if (this.hp.current <= 0) {
+      this.hp.current = 0;
+      this.isAlive = 0;
+      alert(this.name + " проиграл бой!");
+      let allButtons = document.querySelectorAll(".control .button");
+      allButtons.forEach(($item) => ($item.disabled = true));
+      allButtons.forEach(($item) => $item.remove());
+    }
+
+    this.renderHPPersons();
+    callback && callback(count);
+  };
 }
 export default Pokemon;
