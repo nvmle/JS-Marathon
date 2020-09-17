@@ -21,17 +21,6 @@ export function generateLog(firstPerson, secondPerson, damage) {
 
   displayLogs(logs[random(logs.length) - 1]);
 }
-
-// export function generateHealLog(firstPerson, healValue) {
-//   const logs = [
-//     `Пролился свет с небес на землю и ${firstPerson.name} восстановил часть здоровья +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-//     `${firstPerson.name} съел яблоко и пополнил энергию +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-//     `${firstPerson.name} испил целебный элексир, что прибавило ему сил +${healValue}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`,
-//   ];
-
-//   displayLogs(logs[random(logs.length) - 1]);
-// }
-
 export function displayLogs(log) {
   const $p = document.createElement("p");
   $p.innerText = log;
@@ -52,15 +41,36 @@ export function clickCounter(maxClicks = 8, button) {
   };
 }
 
-export function randomPokemon() {
-  const pokemons = [
-    "Pikachu",
-    "Charmander",
-    "Bulbasaur",
-    "Squirtle",
-    "Pidgey",
-    "Mew",
-  ];
+/* fetch requests */
 
-  return pokemons[random(pokemons.length - 1)];
+export async function getRandomPokemon() {
+  const responce = await fetch(
+    "https://reactmarathon-api.netlify.app/api/pokemons?random=true"
+  );
+  const randomPokemon = await responce.json();
+  return randomPokemon;
+}
+
+export async function getFight(character, enemy, idAttack) {
+  const responce = await fetch(
+    `https://reactmarathon-api.netlify.app/api/fight?player1id=${character.id}&attackId=${idAttack}&player2id=${enemy.id}`
+  );
+  const randomDamage = await responce.json();
+  return randomDamage;
+}
+
+export async function getRandomDamage(character, enemy, id) {
+  //getRandomDamage = async (character, enemy, id) => {
+  const fight = await getFight(character, enemy, id);
+  const { kick } = fight;
+  return kick;
+}
+
+export async function getPokemons() {
+  //getPokemons = async () => {
+  const responce = await fetch(
+    "https://reactmarathon-api.netlify.app/api/pokemons"
+  );
+  const body = await responce.json();
+  return body;
 }
